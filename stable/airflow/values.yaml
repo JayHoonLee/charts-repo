@@ -1332,11 +1332,11 @@ postgresql:
     ## the access modes of the PVC
     ##
     accessModes:
-      - ReadWriteMany
+      - ReadWriteOnce
 
     ## the size of PVC to request
     ##
-    size: 5Gi
+    size: 1Gi
 
   ## configs for the postgres StatefulSet
   master:
@@ -1456,7 +1456,7 @@ redis:
 
       ## the size of PVC to request
       ##
-      size: 8Gi
+      size: 1Gi
 
   ## configs for the redis slaves
   ##
@@ -1494,7 +1494,7 @@ redis:
 
       ## the size of PVC to request
       ##
-      size: 8Gi
+      size: 1Gi
 
 ###################################
 # Database - External Database
