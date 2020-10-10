@@ -1280,7 +1280,7 @@ postgresql:
   ## NOTE:
   ## - set to `false` if using an external database
   ##
-  enabled: true
+  enabled: false
 
   ## the postgres database to use
   ##
