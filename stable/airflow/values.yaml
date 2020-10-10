@@ -1317,7 +1317,7 @@ postgresql:
 
     ## the name of the StorageClass used by the PVC
     ##
-    storageClass: ""
+    storageClass: "manual"
 
     ## the access modes of the PVC
     ##
