@@ -1327,12 +1327,12 @@ postgresql:
 
     ## the name of the StorageClass used by the PVC
     ##
-    storageClass: "manual"
+    storageClass:
 
     ## the access modes of the PVC
     ##
     accessModes:
-      - ReadWriteOnce
+      - ReadWriteMany
 
     ## the size of PVC to request
     ##
