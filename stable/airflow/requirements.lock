@@ -1,13 +1,12 @@
 dependencies:
 - name: postgresql
+  repository: https://kubernetes-charts.storage.googleapis.com/
   version: 8.6.4
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  condition: postgresql.enabled
 - name: redis
-  version: 10.5.7
   repository: https://kubernetes-charts.storage.googleapis.com/
-  condition: redis.enabled
+  version: 10.5.7
 - name: prometheus
   repository: https://kubernetes-charts.storage.googleapis.com
   version: 9.7.3
-  condition: prometheus.enabled
+digest: sha256:7b345efa496dc13e1cab8e015b36ffac653a71d4627b546db5f5062eb5cfb874
+generated: "2020-10-10T12:23:56.324306+09:00"
