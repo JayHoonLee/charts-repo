@@ -1326,7 +1326,7 @@ postgresql:
 
     ## the size of PVC to request
     ##
-    size: 8Gi
+    size: 1Gi
 
   ## configs for the postgres StatefulSet
   master:
