@@ -1290,7 +1290,7 @@ postgresql:
   ## NOTE:
   ## - set to `false` if using an external database
   ##
-  enabled: false
+  enabled: true
 
   ## the postgres database to use
   ##
@@ -1336,7 +1336,7 @@ postgresql:
 
     ## the size of PVC to request
     ##
-    size: 1Gi
+    size: 5Gi
 
   ## configs for the postgres StatefulSet
   master:
@@ -1352,23 +1352,23 @@ postgresql:
 externalDatabase:
   ## the type of external database: {mysql,postgres}
   ##
-  type: "postgres"
+  type: postgres
 
   ## the host of the external database
   ##
-  host: "localhost"
+  host: localhost
 
   ## the port of the external database
   ##
-  port: "5432"
+  port: 5432
 
   ## the database/scheme to use within the the external database
   ##
-  database: "airflow"
+  database: airflow
 
   ## the user of the external database
   ##
-  user: "airflow"
+  user: airflow
 
   ## the name of a pre-created secret containing the external database password
   ##
