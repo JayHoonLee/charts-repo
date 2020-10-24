@@ -1391,7 +1391,7 @@ redis:
   ## - set to `false` if using an external redis database
   ## - set to `false` if `airflow.executor` is `KubernetesExecutor`
   ##
-  enabled: false
+  enabled: true
 
   ## the redis password
   ##
@@ -1442,11 +1442,11 @@ redis:
     persistence:
       ## use a PVC to persist data
       ##
-      enabled: false
+      enabled: true
 
       ## the name of the StorageClass used by the PVC
       ##
-      storageClass: ""
+      storageClass: "manual"
 
       ## the access mode of the PVC
       ##
@@ -1480,11 +1480,11 @@ redis:
     persistence:
       ## use a PVC to persist data
       ##
-      enabled: false
+      enabled: true
 
       ## the name of the StorageClass used by the PVC
       ##
-      storageClass: ""
+      storageClass: "manual"
 
       ## the access mode of the PVC
       ##
