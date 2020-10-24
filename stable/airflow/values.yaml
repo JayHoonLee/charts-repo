@@ -851,7 +851,7 @@ flower:
 logs:
   ## the airflow logs folder
   ##
-  path: /home/jhoot/logs/schedu
+  path: /home/jhoot/logs
 
   ## configs for the logs PVC
   ##
