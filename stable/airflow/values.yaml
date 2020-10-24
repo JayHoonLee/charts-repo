@@ -89,7 +89,6 @@ airflow:
     AIRFLOW__CORE__FAB_LOGGING_LEVEL: "WARN"
     AIRFLOW__CORE__DAG_PROCESSOR_MANAGER_LOG_LOCATION: "/home/jhoot/hoon-dags/logs/dag_processor_manager/dag_processor_manager.log"
     AIRFLOW__CORE__EXECUTOR: "KubernetesExecutor"
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: "postgresql+psycopg2://localhost:5432/airflow"
 
     ## KUBERNETES
     AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP: "airflow-configmap"
@@ -847,7 +846,7 @@ logs:
   persistence:
     ## if a persistent volume is mounted at `logs.path`
     ##
-    enabled: false
+    enabled: true
 
     ## the name of an existing PVC to use
     ##
