@@ -103,7 +103,6 @@ airflow:
     AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: "30"
     IRFLOW__CORE__LOAD_EXAMPLES: "False"
 
-
   ## extra annotations for the web/scheduler/worker Pods
   ##
   ## EXAMPLE:
@@ -209,6 +208,10 @@ scheduler:
   ##
   tolerations: []
 
+  ## the security context for the scheduler Pods
+  ##
+  securityContext: {}
+
   ## labels for the scheduler Deployment
   ##
   labels: {}
@@ -306,6 +309,7 @@ scheduler:
   ##
   variables: |
     {}
+
   ## custom airflow pools for the airflow scheduler
   ##
   ## NOTE:
@@ -322,6 +326,7 @@ scheduler:
   ##
   pools: |
     {}
+
   ## the value of the `airflow --num_runs` parameter used to run the airflow scheduler
   ##
   ## NOTE:
@@ -409,6 +414,10 @@ web:
   ## the toleration configs for the web Pods
   ##
   tolerations: []
+
+  ## the security context for the web Pods
+  ##
+  securityContext: {}
 
   ## labels for the web Deployment
   ##
@@ -525,22 +534,16 @@ web:
   ##
   secretsDir: /var/airflow/secrets
 
-  ## secret names which will be mounted as a file at `{web.secretsDir}/<secret_name>`
-  ##
-  ## EXAMPLE:
-  ##   secrets:
-  ##     - airflow-web-secret
+  ## the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>`
   ##
   secrets: []
 
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides web.secrets.
+  ## the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>`
   ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
+  ## NOTE:
+  ##  - overrides `web.secrets`
   ##
-  secretsMap:
+  secretsMap: ""
 
 ###################################
 # Airflow - Worker Configs
@@ -568,7 +571,7 @@ workers:
   ## NOTE:
   ## - when `workers.autoscaling.enabled` is true, this is the minimum
   ##
-  replicas: 2
+  replicas: 1
 
   ## the nodeSelector configs for the worker Pods
   ##
@@ -581,6 +584,10 @@ workers:
   ## the toleration configs for the worker Pods
   ##
   tolerations: []
+
+  ## the security context for the worker Pods
+  ##
+  securityContext: {}
 
   ## labels for the worker StatefulSet
   ##
@@ -691,22 +698,16 @@ workers:
   ##
   secretsDir: /var/airflow/secrets
 
-  ## secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>`
-  ##
-  ## EXAMPLE:
-  ##   secrets:
-  ##     - airflow-worker-secret
+  ## the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>`
   ##
   secrets: []
 
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides workers.secrets.
+  ## the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>`
   ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
+  ## NOTE:
+  ##  - overrides `worker.secrets`
   ##
-  secretsMap:
+  secretsMap: ""
 
 ###################################
 # Airflow - Flower Configs
@@ -744,6 +745,10 @@ flower:
   ## the toleration configs for the flower Pods
   ##
   tolerations: []
+
+  ## the security context for the flower Pods
+  ##
+  securityContext: {}
 
   ## labels for the flower Deployment
   ##
@@ -783,6 +788,13 @@ flower:
     ## the minimum available pods/percentage for the flower Deployment
     ##
     minAvailable: ""
+
+  ## the value of the flower `--auth` argument
+  ##
+  ## NOTE:
+  ##  - see flower docs: https://flower.readthedocs.io/en/latest/auth.html#google-oauth-2-0
+  ##
+  oauthDomains: ""
 
   ## the name of a pre-created secret containing the basic authentication value for flower
   ##
@@ -839,7 +851,7 @@ flower:
 logs:
   ## the airflow logs folder
   ##
-  path: /opt/airflow/logs
+  path: /home/jhoot/logs
 
   ## configs for the logs PVC
   ##
@@ -862,7 +874,7 @@ logs:
     ## - if set to "", then `PersistentVolumeClaim/spec.storageClassName` is omitted
     ## - if set to "-", then `PersistentVolumeClaim/spec.storageClassName` is set to ""
     ##
-    storageClass: "-"
+    storageClass: "manual"
 
     ## the access mode of the PVC
     ##
@@ -885,7 +897,7 @@ logs:
 dags:
   ## the airflow dags folder
   ##
-  path: /opt/airflow/dags
+  path: /home/jhoot/hoon-dags/dags
 
   ## whether to disable pickling dags from the scheduler to workers
   ##
@@ -907,7 +919,7 @@ dags:
   persistence:
     ## if a persistent volume is mounted at `dags.path`
     ##
-    enabled: true
+    enabled: false
 
     ## the name of an existing PVC to use
     ##
@@ -923,7 +935,7 @@ dags:
     ## - if set to "", then `PersistentVolumeClaim/spec.storageClassName` is omitted
     ## - if set to "-", then `PersistentVolumeClaim/spec.storageClassName` is set to ""
     ##
-    storageClass: "-"
+    storageClass: ""
 
     ## the access mode of the PVC
     ##
@@ -1103,6 +1115,10 @@ ingress:
     ##
     annotations: {}
 
+    ## additional labels for the web Ingress
+    ##
+    labels: {}
+
     ## the path for the web Ingress
     ##
     ## WARNING:
@@ -1170,6 +1186,10 @@ ingress:
     ##
     annotations: {}
 
+    ## additional labels for the flower Ingress
+    ##
+    labels: {}
+
     ## the path for the flower Ingress
     ##
     ## WARNING:
@@ -1210,6 +1230,26 @@ ingress:
       ## - this MUST be specified if `ingress.flower.tls.enabled` is true
       ##
       secretName: ""
+
+    ## http paths to add to the flower Ingress before the default path
+    ##
+    ## EXAMPLE:
+    ##   precedingPaths:
+    ##     - path: "/*"
+    ##       serviceName: "ssl-redirect"
+    ##       servicePort: "use-annotation"
+    ##
+    precedingPaths: []
+
+    ## http paths to add to the flower Ingress after the default path
+    ##
+    ## EXAMPLE:
+    ##   succeedingPaths:
+    ##     - path: "/extra-service"
+    ##       serviceName: "extra-service"
+    ##       servicePort: "use-annotation"
+    ##
+    succeedingPaths: []
 
 ###################################
 # Kubernetes - RBAC
@@ -1289,7 +1329,7 @@ postgresql:
   ## NOTE:
   ## - set to `false` if using an external database
   ##
-  enabled: true
+  enabled: false
 
   ## the postgres database to use
   ##
@@ -1326,7 +1366,7 @@ postgresql:
 
     ## the name of the StorageClass used by the PVC
     ##
-    storageClass: "manual"
+    storageClass: ""
 
     ## the access modes of the PVC
     ##
@@ -1335,7 +1375,7 @@ postgresql:
 
     ## the size of PVC to request
     ##
-    size: 1Gi
+    size: 8Gi
 
   ## configs for the postgres StatefulSet
   master:
@@ -1391,7 +1431,7 @@ redis:
   ## - set to `false` if using an external redis database
   ## - set to `false` if `airflow.executor` is `KubernetesExecutor`
   ##
-  enabled: true
+  enabled: false
 
   ## the redis password
   ##
@@ -1442,11 +1482,11 @@ redis:
     persistence:
       ## use a PVC to persist data
       ##
-      enabled: true
+      enabled: false
 
       ## the name of the StorageClass used by the PVC
       ##
-      storageClass: "manual"
+      storageClass: ""
 
       ## the access mode of the PVC
       ##
@@ -1455,7 +1495,7 @@ redis:
 
       ## the size of PVC to request
       ##
-      size: 1Gi
+      size: 8Gi
 
   ## configs for the redis slaves
   ##
@@ -1480,11 +1520,11 @@ redis:
     persistence:
       ## use a PVC to persist data
       ##
-      enabled: true
+      enabled: false
 
       ## the name of the StorageClass used by the PVC
       ##
-      storageClass: "manual"
+      storageClass: ""
 
       ## the access mode of the PVC
       ##
@@ -1493,7 +1533,7 @@ redis:
 
       ## the size of PVC to request
       ##
-      size: 1Gi
+      size: 8Gi
 
 ###################################
 # Database - External Database
